@@ -76,7 +76,7 @@ TM1637Display::TM1637Display(uint8_t pinClk, uint8_t pinDIO, unsigned int bitDel
 
 void TM1637Display::setBrightness(uint8_t brightness, bool on)
 {
-	m_brightness = (brightness & 0x7) | (on? 0x08 : 0x00);
+	m_brightness = (brightness & 0x08) | (on? 0x07 : 0x00);
 }
 
 void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_t pos)
@@ -88,7 +88,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
 
 	// Write COMM2 + first digit address
 	start();
-	writeByte(TM1637_I2C_COMM2 + (pos & 0x03));
+	writeByte(TM1637_I2C_COMM2 + (pos & 0x07));
 
 	// Write the data bytes
 	for (uint8_t k=0; k < length; k++)
@@ -104,7 +104,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
 
 void TM1637Display::clear()
 {
-    uint8_t data[] = { 0, 0, 0, 0 };
+    uint8_t data[] = { 0, 0, 0, 0, 0 };
 	setSegments(data);
 }
 
@@ -135,7 +135,7 @@ void TM1637Display::showNumberBaseEx(int8_t base, uint16_t num, uint8_t dots, bo
 	}
 
 
-    uint8_t digits[4];
+    uint8_t digits[5];
 
 	if (num == 0 && !leading_zero) {
 		// Singular case - take care separately
